@@ -18,7 +18,7 @@ const createStaffMember = async (req,res) => {
             [staff_name, email,hash, staff_designation, staff_phone, role, created_by]
         );
         connection.release();
-        // Return the newly created staff member
+         Return the newly created staff member
         return results.insertId;// You can return the newly created staff member's ID or any other relevant data
 
 };

@@ -114,6 +114,14 @@ exports.validateStaffCreation = [
             return true;
         }),
 ];
+exports.staffUpdateValidators = [
+    body('staff_name').not().isEmpty().withMessage('Staff name is required'),
+    body('staff_phone').not().isEmpty().withMessage('Staff phone is required'),
+    body('email').isEmail().withMessage('Invalid email address'),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+    body('staff_designation').not().isEmpty().withMessage('Staff designation is required'),
+    body('role').isIn(['admin', 'reservation_officer', 'manager', 'operation_executive', 'staff']).withMessage('Invalid role'),
+];
 exports.isRequestValidated = async (req, res, next) => {
    // console.log(req.body)
     const errors = validationResult(req);

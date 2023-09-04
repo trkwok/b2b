@@ -17,7 +17,18 @@ const getStaff = catchAsyncErrors(async (req, res, next) => {
     data: staffMembers,
   });
 });
+const updateStaff = catchAsyncErrors(async (req, res, next) => {
+  const result = await staffService.staffUpdate(req, res, next);
+    res.status(200).send({
+      success: true,
+      message: "Staff Account Successfully Updated",
+      data: result
+    });
+
+});
+
 export const staffController = {
   createStaff,
   getStaff,
+  updateStaff
 };

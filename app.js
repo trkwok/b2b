@@ -9,7 +9,7 @@ import httpStatus from "http-status";
 //const indexRouter = require('./routes/index');
 import agentRouter  from './routes/agent';
 import authJwt from "./helpers/authJWT";
-
+import staffRoute from './routes/staff';
 const app = express();
 
 app.use(logger('dev'));
@@ -25,14 +25,14 @@ app.use("/public/uploads", express.static(__dirname + "/public/uploads"));
 
 
 app.use('/api/v1/agent', agentRouter);
-
+app.use('/api/v1/staff', staffRoute);
 app.use((req, res, next) => {
     next(new ErrorResponse( `path: ${req.originalUrl} not found`,  404))
 })
 
 app.use(errorHandler)
 
-app.listen(5000, (err, req, res) => {
+app.listen(8069, (err, req, res) => {
     console.log('listening on port')
 })
 module.exports = app;

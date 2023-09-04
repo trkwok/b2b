@@ -5,7 +5,7 @@ import env from '../utils/validateENV';
 import pool from "../database/db";
 
 // function that allows only logged-in users to access the application
-function authJwt() {
+function staffJwt() {
     const secret = env.JWT_SECRET;
 
     return expressjwt({
@@ -15,12 +15,10 @@ function authJwt() {
     }).unless({
         // paths that can be accessed without verification
         path: [
-            { url: /\/api\/v1\/agent\/create_agent(.*)/, methods: ['POST'] },
-            { url: /\/api\/v1\/agent\/agent_login(.*)/, methods: ['POST'] },
-            { url: /\/api\/v1\/staff(.*)/, methods: ['*'] }
+
         ],
     });
-};
+}
 
 async  function isRevoked(req, payload)  {
     try {
@@ -40,7 +38,7 @@ async  function isRevoked(req, payload)  {
         // Perform checks here based on user.role
         // If the user is not authorized, return done(null, true);
         // If the user is authorized, return done(null, false);
-        return !(req.user.status === 'approved');
+        return !(req.user);
         // done(null, false); // Example: For now, always consider the user authorized.
     } catch (error) {
         throw new ErrorResponse(error, 400);
@@ -53,7 +51,7 @@ async function getUserById(id) {
     try {
         const selectQuery = `
             SELECT *
-            FROM agent
+            FROM staff
             WHERE id = ?
         `;
         const [user] = await connection.query(selectQuery, [id]);
@@ -67,4 +65,4 @@ async function getUserById(id) {
     }
 }
 
-export default authJwt;
+export default staffJwt;

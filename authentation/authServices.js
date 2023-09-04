@@ -7,7 +7,7 @@ import {createActivationToken, generateJwtToken, getEmailFromActivationToken}
 import env from '../utils/validateENV'
 import { serialize } from 'cookie';
 import sendMail from "../utils/sendMail";
-const loginAgent = async (req, res, next) => {
+const loginAgent = async (req, res, next, table) => {
 
     const agentId = req.params.id;
     // Get a connection from the pool
@@ -16,20 +16,20 @@ const loginAgent = async (req, res, next) => {
 
     const selectQuery = `
       SELECT *
-      FROM agent
+      FROM ${table}
       WHERE email = ?
     `;
 
     const [rows] = await connection.query(selectQuery, [email]);
     connection.release(); // Release the connection back to the pool
 
-    let agent = rows[0];
+    let user = rows[0];
    // console.log(agent)
 
-    if (!agent) {
+    if (!user) {
         return next(new ErrorResponse(`${email} not found`, httpStatus.NOT_FOUND));
     }
-    const isMatch = await argon2.verify(agent.password, password);
+    const isMatch = await argon2.verify(user.password, password);
 
     if (!isMatch) {
         return next(new ErrorResponse('Invalid password', httpStatus.NOT_FOUND));
@@ -40,19 +40,19 @@ const loginAgent = async (req, res, next) => {
         return next(new ErrorResponse(`${email} not found`, httpStatus.NOT_FOUND))
     }
 
-    if (agent.status !== 'approved') {
-        return next(new ErrorResponse(`${agent.first_name} please wait, we verify your profile`));
+    if (user.agent_id && user.status !== 'approved') {
+        return next(new ErrorResponse(`${user.email} please wait, we verify your profile`));
     }
 
 
-    const token = generateJwtToken(agent.email, agent.id);
-     agent = {
-        ...agent,
+    const token = generateJwtToken(user.email, user.id);
+     user = {
+        ...user,
         token
     };
     // Remove 'password' and 'agent_id' fields from the new object
 
-    delete agent.password;
+    delete user.password;
      const tokenAge =  (parseInt(env.JWT_EXPIRES_IN,10)) * 24 * 3600
     const cookieOptions = {
         httpOnly: true, // Make the cookie accessible only via HTTP (not JavaScript)
@@ -66,7 +66,7 @@ const loginAgent = async (req, res, next) => {
    // document.cookie = cookieString;
 
 
-    return agent
+    return user
 
 }
 

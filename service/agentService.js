@@ -100,109 +100,69 @@ const cms = async (req, res, next) => {
 }
 
 const updateCertificates = async (req, res, next) => {
-    const agentId = req.user.id;
-    console.log(req.files);
-
-    if (!req.files || req.files.length !== 4) {
-        return next(new ErrorResponse('Images not found', 400));
-    }
-
-    const imagePaths = [];
-    const imageNames = [];
-
-    for (let i = 0; i < req.files.length; i++) {
-        console.log('here');
-        const file = req.files[i];
-        const type = req.body.types[i];
-        const path = req.protocol + '://' + req.get('host') +'/public'+ '/uploads/' + file.filename;
-        imagePaths.push({ type: type, path: path });
-        imageNames.push(file.filename);
-    }
-
-    const selectPathsQuery = `
-        SELECT path
-        FROM certificates
-        WHERE agentId = ?
-    `;
-
-    const deleteQuery = `
-        DELETE FROM certificates
-        WHERE agentId = ?
-    `;
-
-    const insertQuery = `
-        INSERT INTO certificates (type, path, agentId)
-        VALUES (?, ?, ?)
-    `;
-
+    //console.log(req)
     try {
+        const agentId = req.user.id; // Assuming you have the agent's ID in req.user.id
         const connection = await pool.getConnection();
+       // console.log(req)
+        // Prepare the SQL INSERT statement
 
-        // First, retrieve existing certificate paths for the agent
-        const [selectResult] = await connection.query(selectPathsQuery, [agentId]);
+        // Delete existing certificates for the agent
+        const deleteQuery = `
+            DELETE FROM certificates
+            WHERE agentId = ?
+        `;
 
-        // Remove existing images from the folder
-        selectResult.forEach(function (row) {
-            const path = row.path;
-            console.log(path);
-            const imageNameFromPath = path.substring(path.lastIndexOf('/') + 1);
-            removeImageFromFolder('public/uploads', imageNameFromPath);
-        });
-
-        // Next, delete existing certificates for the agent
         await connection.query(deleteQuery, [agentId]);
+        const insertQuery = `
+            INSERT INTO certificates (type, path,  agentId)
+            VALUES (?, ?, ?)
+        `;
 
-        // Finally, insert the new certificates and convert images to PDF
         const insertedCertificates = [];
-        let errorOccurred = false;
 
-        for (const imagePath of imagePaths) {
-            if (!errorOccurred) {
-                try {
-                    // Create a PDF document
-                    const pdfDoc = new PDFDocument();
-                    const pdfPath = `public/uploads/${imagePath.path.substring(imagePath.path.lastIndexOf('/') + 1)}.pdf`;
-                    const pdfStream = fs.createWriteStream(pdfPath);
+        // Check if req.types, req.urls, and req.images are defined and have the same length
+        if (
+            req.body.types &&
+            req.urls &&
+            req.images &&
+            req.body.types.length === req.urls.length &&
+            req.body.types.length === req.images.length
+        ) {
+            // Iterate through the arrays and insert data
+            for (let i = 0; i < req.body.types.length; i++) {
+                const type = req.body.types[i];
+                const path = req.urls[i];
+                console.log(type, path);
 
-                    // Check if the image file exists
-                    if (fs.existsSync(imagePath)) {
-                        // Add the image to the PDF
-                        pdfDoc.image(imagePath, 0, 0, { width: 612, height: 792 });
-
-                        // End the PDF document and save it
-                        pdfDoc.end();
-                        pdfDoc.pipe(pdfStream);
-
-                        // Insert the PDF path into the database
-                        const [result] = await connection.query(insertQuery, [imagePath.type, pdfPath, agentId]);
-                        insertedCertificates.push([imagePath.type, pdfPath, agentId]);
-                    } else {
-                        console.error('Image file not found:', imagePath);
-                    }
-                } catch (error) {
-                    console.error('Error inserting certificates:', error);
-                    imageNames.forEach(function (imageName) {
-                        const imageNameFromPath = imageName.substring(imageName.lastIndexOf('/') + 1);
-                        removeImageFromFolder('public/uploads', imageNameFromPath);
-                    });
-                    errorOccurred = true;
-                    next(new ErrorResponse(error, 500));
-                }
+                // Insert the data into the certificates table
+                const [insertResult] = await connection.
+                query(insertQuery, [type, path, agentId]);
+                console.log(insertResult)
+                // Store the inserted certificate in the array
+                insertedCertificates.push({ type, path });
             }
-        }
 
-        connection.release();
+            connection.release();
 
-        if (!errorOccurred) {
-            res.status(200).json({ success: true, data: insertedCertificates });
+            // Return the inserted certificates if successful
+            return  insertedCertificates;
+        } else {
+            // If the arrays are not defined or don't have the same length, handle the error
+            for (const imagePath of req.images) {
+                deleteFile(imagePath);
+            }
+            next( new ErrorResponse('Invalid input data', httpStatus.BAD_REQUEST));
         }
     } catch (error) {
-        console.error('Error processing certificates:', error);
-        imageNames.forEach(function (imageName) {
-            const imageNameFromPath = imageName.substring(imageName.lastIndexOf('/') + 1);
-            removeImageFromFolder('public/uploads', imageNameFromPath);
-        });
-        next(new ErrorResponse(error, 500));
+        console.error('Error inserting certificates:', error);
+
+        // Delete the images on failure
+        for (const imagePath of req.images) {
+            deleteFile(imagePath);
+        }
+
+        next(new ErrorResponse('Error inserting certificates', httpStatus.INTERNAL_SERVER_ERROR));
     }
 };
 

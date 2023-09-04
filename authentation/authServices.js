@@ -132,13 +132,9 @@ const forgotPassword = async (req, res, next) => {
     }
 
 const changePassword = async (req, res, next) => {
-    const { oldPassword, newPassword, confirmPassword } = req.body;
+    const { oldPassword, newPassword} = req.body;
     const id = req.user.id;
-   //  console.log(id)
 
-    /*if (newPassword !== confirmPassword) {
-        return next(new ErrorResponse('Passwords do not match', 404));
-    }*/
 
 
         const [user] = await pool.query('SELECT * FROM agent WHERE id = ?', [id]);

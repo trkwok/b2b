@@ -1,6 +1,8 @@
 // Create a function to create a new staff member
 import pool from "../database/db";
 import argon2 from "argon2";
+import ErrorResponse from "../errorHandler/errorResponse";
+import httpStatus from "http-status";
 
 const createStaffMember = async (req,res) => {
         const { staff_name, email, password, staff_designation, staff_phone, role } = req.body;
@@ -32,8 +34,28 @@ const getStaffMembers = async () => {
         }
 };
 
+const staffUpdate = async (req, res, next) => {
+        const id = req.params.id;
+
+        // Extract fields that can be updated
+        const { staff_name, staff_phone,email,password,staff_designation,role } = req.body;
+        const hash = await argon2.hash(password);
+        const connection = await pool.getConnection();
+        // Update the specified fields in the Staff table
+        const [rows] = await connection.query(
+            'UPDATE Staff SET staff_name=?, staff_phone=?,email=?,password=?,staff_designation=?,role=? WHERE id=?',
+            [staff_name, staff_phone,email,hash,staff_designation,role,id]
+        );
+        connection.release();
+
+        if (rows.affectedRows === 0) {
+                return next(new ErrorResponse('Staff not found', httpStatus.NOT_FOUND));
+        }
+
+        return rows;
+};
 
 
 export const staffService ={
-    createStaffMember, getStaffMembers,
+    createStaffMember, getStaffMembers,staffUpdate
 };

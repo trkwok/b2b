@@ -14,7 +14,7 @@ const router = express.Router();
 
 
 router.route('/create_agent')
-    .post(upload.single('tin_file'),
+    .post(upload.single('image'),
         validateSignupRequest, isRequestValidated, imageHandler, agentController.createAgent)
 
 router.route('/update_agent')

@@ -93,7 +93,27 @@ exports.validateChangePasswordData = [
             return true;
         }),
 ]
+const validRoles = ['admin', 'reservation_officer', 'manager', 'operation_executive', 'staff'];
 
+// Validation middleware for staff creation
+exports.validateStaffCreation = [
+    body('staff_name').notEmpty().withMessage('Staff name is required'),
+    body('email').notEmpty().isEmail().withMessage('Valid email is required'),
+    body('password').notEmpty().isLength({ min: 6, max: 12 }).withMessage('Password must be 6 to 12 characters long'),
+    body('staff_designation').notEmpty().withMessage('Staff designation is required'),
+    body('staff_phone')
+        .notEmpty()
+        .withMessage('Staff phone is required'),
+    body('role')
+        .notEmpty()
+        .withMessage('Role is required')
+        .custom((value) => {
+            if (!validRoles.includes(value)) {
+                throw new Error('Invalid role');
+            }
+            return true;
+        }),
+];
 exports.isRequestValidated = async (req, res, next) => {
    // console.log(req.body)
     const errors = validationResult(req);

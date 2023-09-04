@@ -32,7 +32,6 @@ app.use((req, res, next) => {
 
 app.use(errorHandler)
 
-
 app.listen(5000, (err, req, res) => {
     console.log('listening on port')
 })

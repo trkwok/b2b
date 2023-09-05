@@ -1,4 +1,4 @@
-import catchAsyncErrors from "../errorHandler/catchAsyncErrors";
+import catchAsyncErrors from "../../errorHandler/catchAsyncErrors";
 import {agentService} from "../service/agentService";
 import {authService} from "../authentation/authServices";
 

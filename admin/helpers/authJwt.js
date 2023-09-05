@@ -1,11 +1,11 @@
 import {expressjwt} from 'express-jwt';
 import JWT from 'jsonwebtoken';
-import ErrorResponse from '../errorHandler/errorResponse';
-import env from '../utils/validateENV';
-import pool from "../database/db";
+import ErrorResponse from '../../errorHandler/errorResponse';
+import env from '../../utils/validateENV';
+import pool from '../../database/db';
 
 // function that allows only logged-in users to access the application
-function staffJwt() {
+function authJwt() {
     const secret = env.JWT_SECRET;
 
     return expressjwt({
@@ -15,12 +15,13 @@ function staffJwt() {
     }).unless({
         // paths that can be accessed without verification
         path: [
-            { url: /\/api\/v1\/staff\/staff_login(.*)/, methods: ['POST'] },
+            {url: /\/api\/v1\/super_admin\/super_admin_login(.*)/, methods: ['POST']},
         ],
     });
-}
+};
 
-async  function isRevoked(req, payload)  {
+async function isRevoked(req, payload) {
+
     try {
         //console.log(req);
         const token = req.headers['authorization'].split(' ')[1];
@@ -28,7 +29,7 @@ async  function isRevoked(req, payload)  {
         // console.log('here');
         let user = JWT.verify(token, env.JWT_SECRET);
         // console.log(user);
-        user = await getUserById(user.agentId);
+        user = await getUserById(user.id);
         req.user = user[0];
         //req.user = user;
         console.log(req.user);
@@ -38,11 +39,12 @@ async  function isRevoked(req, payload)  {
         // Perform checks here based on user.role
         // If the user is not authorized, return done(null, true);
         // If the user is authorized, return done(null, false);
-        return !(req.user);
+        return !(req.user.role === 'super-admin' && req.user.is_super_admin);
         // done(null, false); // Example: For now, always consider the user authorized.
     } catch (error) {
         throw new ErrorResponse(error, 400);
     }
+
 }
 
 async function getUserById(id) {
@@ -51,7 +53,7 @@ async function getUserById(id) {
     try {
         const selectQuery = `
             SELECT *
-            FROM staff
+            FROM admin
             WHERE id = ?
         `;
         const [user] = await connection.query(selectQuery, [id]);
@@ -65,4 +67,6 @@ async function getUserById(id) {
     }
 }
 
-export default staffJwt;
+export default authJwt;
+
+

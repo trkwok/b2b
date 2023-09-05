@@ -1,12 +1,12 @@
-import pool from "../database/db";
-import ErrorResponse from "../errorHandler/errorResponse";
+import pool from "../../database/db";
+import ErrorResponse from "../../errorHandler/errorResponse";
 import httpStatus from "http-status";
 import argon2 from "argon2";
 import {createActivationToken, generateJwtToken, getEmailFromActivationToken}
-    from "../helpers/authHandler";
-import env from '../utils/validateENV'
+    from "../../helpers/authHandler";
+import env from '../../utils/validateENV'
 import { serialize } from 'cookie';
-import sendMail from "../utils/sendMail";
+import sendMail from "../../utils/sendMail";
 const loginAgent = async (req, res, next, table) => {
 
     const agentId = req.params.id;

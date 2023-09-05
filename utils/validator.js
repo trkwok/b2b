@@ -25,6 +25,28 @@ exports.validateSignupRequest = [
     body('company_address').notEmpty().withMessage('Company address is required'),
 ];
 
+exports.validateAdmin = [
+    body('first_name')
+        .notEmpty()
+        .withMessage('firstName is required'),
+    body('last_name')
+        .notEmpty()
+        .withMessage('lastName is required'),
+    body('email')
+        .isEmail()
+        .withMessage('Valid Email is required'),
+    body('password')
+        .isLength({ min: 8, max: 12 })
+        .withMessage('Password must be between 8 and 12 characters long'),
+    body('confirmPassword')
+        .custom((value, { req }) => {
+            if (value !== req.body.password) {
+                throw new Error('Passwords must match');
+            }
+            return true;
+        }),
+]
+
 
 exports.updateAgentRequest = [
 

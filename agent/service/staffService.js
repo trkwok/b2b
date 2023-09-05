@@ -1,7 +1,7 @@
 // Create a function to create a new staff member
-import pool from "../database/db";
+import pool from "../../database/db";
 import argon2 from "argon2";
-import ErrorResponse from "../errorHandler/errorResponse";
+import ErrorResponse from "../../errorHandler/errorResponse";
 import httpStatus from "http-status";
 
 const createStaffMember = async (req, res,next) => {

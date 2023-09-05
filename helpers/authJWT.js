@@ -17,7 +17,7 @@ function authJwt() {
         path: [
             { url: /\/api\/v1\/agent\/create_agent(.*)/, methods: ['POST'] },
             { url: /\/api\/v1\/agent\/agent_login(.*)/, methods: ['POST'] },
-            { url: /\/api\/v1\/staff(.*)/, methods: ['*'] }
+
         ],
     });
 };

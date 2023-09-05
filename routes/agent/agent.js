@@ -1,17 +1,17 @@
 import express from 'express';
-import {agentController} from "../controller/agentController";
+import {agentController} from "../../agent/controller/agentController";
 import {
     validateSignupRequest,
     isRequestValidated,
     updateAgentRequest,
     validateSigninRequest,
     validateCmsItem, validateFormData, validateResetPasswordData, validateChangePasswordData, validateStaffCreation
-} from "../utils/validator";
-import {upload} from "../utils/fileUploader";
+} from "../../utils/validator";
+import {upload} from "../../utils/fileUploader";
 import {imageHandler, MultipleImageHandler, removeCertificatesImages, removeStoreImage}
-    from "../helpers/imageHandler";
-import {staffController} from "../controller/staffController";
-import authJwt from "../helpers/authJWT";
+    from "../../helpers/imageHandler";
+import {staffController} from "../../agent/controller/staffController";
+import authJwt from "../../helpers/authJWT";
 
 const router = express.Router();
 

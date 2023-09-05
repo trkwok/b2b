@@ -1,14 +1,14 @@
 import express from 'express';
-import {staffController} from "../controller/staffController";
+import {staffController} from "../../agent/controller/staffController";
 import {
     validateStaffCreation,
     isRequestValidated,
     validateSigninRequest,
     staffUpdateValidators
-} from "../utils/validator";
-import {agentController} from "../controller/agentController";
-import authJwt from "../helpers/authJWT";
-import staffJwt from "../helpers/staffJwt";
+} from "../../utils/validator";
+import {agentController} from "../../agent/controller/agentController";
+import authJwt from "../../helpers/authJWT";
+import staffJwt from "../../helpers/staffJwt";
 const router = express.Router();
 
 

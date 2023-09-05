@@ -1,9 +1,9 @@
-import pool from '../database/db';
-import {convertToWebP, deleteFile, removeFileExtension} from "../helpers/folderhandle";
+import pool from '../../database/db';
+import {convertToWebP, deleteFile, removeFileExtension} from "../../helpers/folderhandle";
 import argon2 from 'argon2';
-import ErrorResponse from "../errorHandler/errorResponse";
+import ErrorResponse from "../../errorHandler/errorResponse";
 import httpStatus from "http-status";
-import {removeImageFromFolder} from "../helpers/imageHandler";
+import {removeImageFromFolder} from "../../helpers/imageHandler";
 import PDFDocument from "pdfkit";
 import fs from "fs";
 

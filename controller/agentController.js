@@ -24,7 +24,7 @@ const updateAgent = catchAsyncErrors(async (req,res, next) => {
 
 const loginAgent = catchAsyncErrors(async (req,res,next) => {
 
-    const result = await authService.loginAgent(req,res,next);
+    const result = await authService.loginAgent(req,res,next, 'agent');
     result && res.status(200).send({
         success:true,
         message:"Login Successfully ",

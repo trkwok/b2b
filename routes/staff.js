@@ -1,9 +1,24 @@
 import express from 'express';
 import {staffController} from "../controller/staffController";
-import {validateStaffCreation, isRequestValidated, staffUpdateValidators} from "../utils/validator";
+import {
+    validateStaffCreation,
+    isRequestValidated,
+    validateSigninRequest,
+    staffUpdateValidators
+} from "../utils/validator";
+import {agentController} from "../controller/agentController";
+import authJwt from "../helpers/authJWT";
+import staffJwt from "../helpers/staffJwt";
 const router = express.Router();
 
-router.route('/create_staff').post(validateStaffCreation,isRequestValidated,staffController.createStaff)
-router.route('/update_staff/:id').put(staffUpdateValidators,isRequestValidated,staffController.updateStaff)
-router.get('/', staffController.getStaff)
+
+router.use(staffJwt())
+router.route('/staff_login')
+    .post(validateSigninRequest, isRequestValidated,
+       staffController.loginStaff)
+
+router.route('/update_staff/:id')
+    .put(staffUpdateValidators,isRequestValidated,staffController.updateStaff)
+
+router.get('/staff_get_all', staffController.getStaff)
 export default router;

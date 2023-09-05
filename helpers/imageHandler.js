@@ -81,3 +81,74 @@ export  const removeStoreImage =  catchAsyncErrors(async (req, res, next) => {
         }
     });
 };
+
+
+
+export const MultipleImageHandler = catchAsyncErrors(async (req, res, next) => {
+  //  console.log(req.body)
+    if (!req.files || req.files.length !== 4) {
+        return next(new ErrorResponse('No files uploaded', httpStatus.BAD_REQUEST));
+    }
+
+    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+    const images = [];
+    const urls = [];
+
+    for (let i = 0; i < req.files.length; i++) {
+        const file = req.files[i];
+
+        if (!file) {
+            continue;
+        }
+
+        const fileName = file.filename;
+        const output = removeFileExtension(fileName);
+
+        let image;
+        if (file.mimetype === 'application/pdf') {
+            image = file.path;
+        } else {
+            image = await convertToWebP(file.path, `${output}`);
+            deleteFile(file.path);
+        }
+
+        const newOutput = image.split('\\').pop();
+        const url = `${basePath}${newOutput}`;
+
+        images.push(image);
+        urls.push(url);
+    }
+
+    req.images = images;
+    req.urls = urls;
+
+    next();
+});
+
+
+export const removeCertificatesImages = catchAsyncErrors(async (req, res, next) => {
+    const agentId = req.user.id; // Assuming you have the agent's ID in req.user.id
+    const connection = await pool.getConnection();
+
+
+        // Retrieve paths from the certificates table for the agent
+        const [rows] = await connection.query(
+            'SELECT path FROM certificates WHERE agentId=?',
+            [agentId]
+        );
+
+        if (rows.length === 0) {
+            // No certificates found, continue to the next middleware
+            next();
+            return;
+        }
+
+        // Process and delete each certificate image
+        for (const row of rows) {
+            const path = row.path.split(`${req.protocol}://${req.get('host')}/`)[1];
+            deleteFile(path);
+        }
+
+        next();
+
+});

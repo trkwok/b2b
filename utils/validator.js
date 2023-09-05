@@ -123,8 +123,12 @@ exports.staffUpdateValidators = [
     body('staff_designation').not().isEmpty().withMessage('Staff designation is required'),
     body('role').isIn(['admin', 'reservation_officer', 'manager', 'operation_executive', 'staff']).withMessage('Invalid role'),
 ];
-export const isRequestValidated = async (req, res, next) => {
-   // console.log(req.body)
+
+
+
+exports.isRequestValidated = async (req, res, next) => {
+
+
     const errors = validationResult(req);
     console.log(errors)
 

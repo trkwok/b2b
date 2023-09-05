@@ -24,10 +24,11 @@ const createStaffMember = async (req, res,next) => {
     return results.insertId;// You can return the newly created staff member's ID or any other relevant data
 
 };
-const getStaffMembers = async (req,res,next) => {
+const getAllMembers = async (req, res, next, table) => {
     const connection = await pool.getConnection();
     try {
-        const [rows] = await connection.query('SELECT * FROM Staff');
+        const [rows] = await connection.query(`SELECT * FROM ${table}`);
+        delete rows[0].password
         return rows;
     } finally {
         connection.release();
@@ -57,5 +58,5 @@ const staffUpdate = async (req, res, next) => {
 
 
 export const staffService = {
-    createStaffMember, getStaffMembers,staffUpdate
+    createStaffMember,  getAllMembers,staffUpdate
 };

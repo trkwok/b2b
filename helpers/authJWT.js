@@ -30,10 +30,11 @@ async  function isRevoked(req, payload)  {
         // console.log('here');
         let user = JWT.verify(token, env.JWT_SECRET);
         // console.log(user);
-        user = await getUserById(user.agentId);
+        user = await getUserById(user.id);
         req.user = user[0];
         //req.user = user;
         console.log(req.user);
+        if(!req.user) return  false
         //  console.log(payload.payload.agentId)
         //  req.userId = payload.payload.agentId
 

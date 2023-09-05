@@ -47,6 +47,13 @@ exports.validateAdmin = [
         }),
 ]
 
+exports.agentStatusUpdate = [
+    body('status')
+        .notEmpty()
+        .withMessage('Status field must not be empty')
+        .isIn(['approved', 'rejected'])
+        .withMessage('Status must be either "approved" or "rejected"'),
+]
 
 exports.updateAgentRequest = [
 

@@ -11,11 +11,11 @@ const createStaff = catchAsyncErrors(async (req, res, next) => {
   });
 });
 const getStaff = catchAsyncErrors(async (req, res, next) => {
-  const staffMembers = await staffService.getStaffMembers(req, res, next);
+  const Members = await staffService.getAllMembers(req, res, next, 'staff');
   res.status(200).json({
     success: true,
     message: "Successfully retrieved staff members",
-    data: staffMembers,
+    data: Members,
   });
 });
 

@@ -1,10 +1,10 @@
 
 import jwt from 'jsonwebtoken';
 import env from '../utils/validateENV'
- export const generateJwtToken = (email, agentId) => {
+export const generateJwtToken = (email, id) => {
     return jwt.sign({
         email,
-        agentId
+        id
     }, env.JWT_SECRET, {
         expiresIn: env.JWT_EXPIRES_IN
     });

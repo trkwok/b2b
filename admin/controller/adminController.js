@@ -1,5 +1,5 @@
 import catchAsyncErrors from '../../errorHandler/catchAsyncErrors';
-import {adminService as agentService} from '../services/adminService';
+import {adminService, adminService as agentService} from '../services/adminService';
 import {adminAuth} from '../authentatcion/adminAuth';
 
 
@@ -22,8 +22,19 @@ const loginAdmin = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
+const  changeAgentStatus = catchAsyncErrors(async (req, res, next) => {
+
+    const result = await adminService.changeAgentStatus(req, res, next)
+    result && res.status(200).send({
+        success: true,
+        message: 'Agent status changed',
+        data: result
+    })
+})
+
 export const adminController = {
 
     createAdmin,
-    loginAdmin
+    loginAdmin,
+    changeAgentStatus
 }

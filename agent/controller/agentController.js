@@ -1,6 +1,7 @@
 import catchAsyncErrors from "../../errorHandler/catchAsyncErrors";
 import {agentService} from "../service/agentService";
 import {authService} from "../authentation/authServices";
+import {staffService} from '../service/staffService';
 
 const createAgent = catchAsyncErrors(async (req, res,next) => {
 
@@ -82,6 +83,15 @@ const changePassword = catchAsyncErrors(async (req,res,next) => {
     })
 })
 
+const getAgent = catchAsyncErrors(async (req, res, next) => {
+    const Members = await staffService.getAllMembers(req, res, next, 'agent');
+    res.status(200).json({
+        success: true,
+        message: "Successfully retrieved Agent members",
+        data: Members,
+    });
+})
+
 export const agentController = {
     createAgent,
     updateAgent,
@@ -90,5 +100,6 @@ export const agentController = {
     updateCertificates,
     forgotPassword,
     resetPassword,
-    changePassword
+    changePassword,
+    getAgent
 }

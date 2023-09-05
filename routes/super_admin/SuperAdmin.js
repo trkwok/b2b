@@ -5,21 +5,32 @@ import {
     isRequestValidated,
     updateAgentRequest,
     validateSigninRequest,
-    validateCmsItem, validateFormData, validateResetPasswordData, validateChangePasswordData, validateAdmin
+    validateCmsItem,
+    validateFormData,
+    validateResetPasswordData,
+    validateChangePasswordData,
+    validateAdmin,
+    agentStatusUpdate
 } from '../../utils/validator';
 import {upload} from "../../utils/fileUploader";
 import {imageHandler} from "../../helpers/imageHandler";
 import {adminController} from '../../admin/controller/adminController';
-import authJWT from '../../admin/helpers/authJwt';
+import {staffController} from '../../agent/controller/staffController';
+import {agentController} from '../../agent/controller/agentController';
 
 const router = express.Router();
 
-router.use(authJWT())
+
 router.route('/create_admin')
     .post(upload.single('image'),
         validateAdmin, isRequestValidated, imageHandler, adminController.createAdmin)
 
-router.route('/super_admin_login').post(validateSigninRequest, isRequestValidated, adminController.loginAdmin)
+router.route('/super_admin_login')
+    .post(validateSigninRequest, isRequestValidated, adminController.loginAdmin)
+
+router.route('/super_admin_get_all_agent').get(agentController.getAgent)
+router.route('/super_admin_change_agent_status/:id')
+    .post(agentStatusUpdate,isRequestValidated,adminController.changeAgentStatus)
 
 /*router.route('/update_agent')
     .put(upload.single('image'),

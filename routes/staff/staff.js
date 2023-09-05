@@ -20,5 +20,5 @@ router.route('/staff_login')
 router.route('/update_staff/:id')
     .put(staffUpdateValidators,isRequestValidated,staffController.updateStaff)
 
-router.get('/staff_get_all', staffController.getStaff)
+
 export default router;

@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-export const validateBankTransfer = [
+exports.validateBankTransfer = [
   body("deposited_from")
     .notEmpty()
     .withMessage("Deposited From is required")
@@ -180,9 +180,9 @@ export const validateChequeDeposit = [
     .isNumeric()
     .withMessage("Amount must be a number"),
 ];
-export const validateCashDeposit = [
+exports.validateCashDeposit = [
   body("depositor_name").notEmpty().withMessage("Depositor name is required"),
-  body("receiver_name").notEmpty().withMessage("Receiver name is required"),
+  body("reciever_name").notEmpty().withMessage("Receiver name is required"),
   body("amount")
     .notEmpty()
     .withMessage("Amount is required")

@@ -52,7 +52,7 @@ const createCashDeposit = async (req) => {
   console.log(deposited_by);
   const connection = await pool.getConnection();
   const [rows] = await connection.query(
-    "INSERT INTO ChequeDeposit (depositor_name,reciever_name,amount,transaction_file, deposited_by) VALUES (?, ?, ?, ?,?)",
+    "INSERT INTO CashDeposit (depositor_name,reciever_name,amount,transaction_file, deposited_by) VALUES (?, ?, ?, ?,?)",
     [depositor_name, reciever_name, amount, req.url, deposited_by]
   );
   connection.release();

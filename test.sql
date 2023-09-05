@@ -163,8 +163,8 @@ CREATE TABLE CashDeposit (
     id VARCHAR(100) DEFAULT REPLACE(UUID(), '-', '') PRIMARY KEY,
     cash_id VARCHAR(10) GENERATED ALWAYS AS (CONCAT('CA', 1000 + id)),
     depositor_name VARCHAR(100) NOT NULL,
-    receiver_name VARCHAR(100),
-    amount DECIMAL(10, 2),
-    transaction_file VARCHAR(255),
+     reciever_name VARCHAR(100) NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    transaction_file VARCHAR(255) NOT NULL,
     deposited_by VARCHAR(100) NOT NULL
 );

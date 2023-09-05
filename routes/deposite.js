@@ -20,6 +20,15 @@ router
     depositController.createBankTransfer
   );
 router
+  .route("/create_cheque_transfer")
+  .post(
+    upload.single("transaction_file"),
+    imageHandler,
+    validateChequeDeposit,
+    isRequestValidated,
+    depositController.createCashDeposit
+  );
+router
   .route("/create_cash_deposit")
   .post(
     upload.single("transaction_file"),

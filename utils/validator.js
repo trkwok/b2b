@@ -1,6 +1,7 @@
 import { body, validationResult } from 'express-validator'
 import ErrorResponse from "../errorHandler/errorResponse";
 
+
 exports.validateSignupRequest = [
     body('first_name')
         .notEmpty()
@@ -124,8 +125,10 @@ exports.staffUpdateValidators = [
 ];
 
 
+
 exports.isRequestValidated = async (req, res, next) => {
-   // console.log(req.body)
+
+
     const errors = validationResult(req);
     console.log(errors)
 

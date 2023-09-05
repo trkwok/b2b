@@ -95,7 +95,7 @@ exports.validateBankTransfer = [
     .withMessage("Enter Amount must be a number"),
 ];
 
-export const validateChequeDeposit = [
+exports.validateChequeDeposit = [
   body("check_number")
     .notEmpty()
     .withMessage("Check Number is required")

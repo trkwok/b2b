@@ -32,7 +32,7 @@ async  function isRevoked(req, payload)  {
         user = await getUserById(user.agentId);
         req.user = user[0];
         //req.user = user;
-        console.log(req.user);
+        // console.log(req.user);
         //  console.log(payload.payload.agentId)
         //  req.userId = payload.payload.agentId
 

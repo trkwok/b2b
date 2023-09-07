@@ -7,7 +7,7 @@ import {agentController} from '../../agent/controller/agentController';
 
 const router = express.Router();
 
-router.route('/admin_login').post(validateSigninRequest,
+router.route('/login').post(validateSigninRequest,
     isRequestValidated, adminController.loginAdmin)
 
 router.get('/admin_get_all_agent', staffController.getStaff)

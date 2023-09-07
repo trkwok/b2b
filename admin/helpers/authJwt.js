@@ -15,8 +15,8 @@ function authJwt(role, role_type) {
     }).unless({
         // paths that can be accessed without verification
         path: [
-            {url: /\/api\/v1\/super_admin\/super_admin_login(.*)/, methods: ['POST']},
-            {url: /\/api\/v1\/admin\/admin_login(.*)/, methods: ['POST']},
+           /* {url: /\/api\/v1\/admin\/super_admin\/login(.*)/, methods: ['POST']},*/
+            {url: /\/api\/v1\/admin\/login(.*)/, methods: ['POST']},
         ],
     });
 };
@@ -42,9 +42,10 @@ async function isRevoked(req, role, role_type) {
         // Perform checks here based on user.role
         // If the user is not authorized, return done(null, true);
         // If the user is authorized, return done(null, false);
-      //   console.log(req.user.role, role)
+        console.log(req.user.role === role && req.user?.is_super_admin === role_type)
       //   console.log(req.user.role === role)
-        return !(req.user.role === role );
+       // console.log( 'value:'+ req.user.is_super_admin)
+        return !(req.user.role === role && req.user?.is_super_admin === role_type );
         // done(null, false); // Example: For now, always consider the user authorized.
     } catch (error) {
         throw new ErrorResponse(error, 400);

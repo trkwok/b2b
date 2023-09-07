@@ -25,11 +25,11 @@ router.route('/create_admin')
     .post(upload.single('image'),
         validateAdmin, isRequestValidated, imageHandler, adminController.createAdmin)
 
-router.route('/super_admin_login')
-    .post(validateSigninRequest, isRequestValidated, adminController.loginAdmin)
+/*router.route('/login')
+    .post(validateSigninRequest, isRequestValidated, adminController.loginAdmin)*/
 
-router.route('/super_admin_get_all_agent').get(agentController.getAgent)
-router.route('/super_admin_change_agent_status/:id')
+router.route('/get_all_agent').get(agentController.getAgent)
+router.route('/change_agent_status/:id')
     .post(agentStatusUpdate,isRequestValidated,adminController.changeAgentStatus)
 
 /*router.route('/update_agent')

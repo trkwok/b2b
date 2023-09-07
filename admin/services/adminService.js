@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 import * as argon2 from 'argon2';
 import pool from '../../database/db';
 import {deleteFile} from '../../helpers/folderhandle';
+import path from 'path';
 
 const createAdmin = async (req, res, next) => {
     try {
@@ -37,7 +38,7 @@ const changeAgentStatus = async (req, res, next) => {
 
 
     // Check if the user with the provided ID exists in the Agent table
-    const userExists = await checkUserExists(userId);
+    const userExists = await checkUserExists(req.body.status,userId);
     console.log(userExists)
 
     if (userExists) {
@@ -47,20 +48,21 @@ const changeAgentStatus = async (req, res, next) => {
         if (updateResult) {
             return updateResult
         } else {
-            return ({message: 'Failed to update user'});
+            return next(new ErrorResponse( 'Failed to update user', httpStatus.FAILED_DEPENDENCY));
         }
     } else {
-        return ({message: 'User not found'});
+        return next(new ErrorResponse('User not found', httpStatus.NOT_FOUND));
 
     }
 }
 
 
 // Function to check if a user exists in the Agent table
-async function checkUserExists(userId) {
+async function checkUserExists(status,userId) {
     const connection = await pool.getConnection();
     try {
         const [user] = await connection.query('SELECT * FROM agent WHERE id = ?', [userId]);
+      //  console.log(user)
         return user.length > 0;
     } finally {
         connection.release();
@@ -73,7 +75,13 @@ async function approveUser(userId, approvedById, status) {
     try {
         const updateQuery = 'UPDATE Agent SET status = ?, approved_by = ? WHERE id = ?';
         const [updateResult] = await connection.query(updateQuery, [status, approvedById, userId]);
-        return updateResult.affectedRows > 0;
+       // console.log(updateResult)
+        if(updateResult.affectedRows > 0) {
+            const [user] = await connection.query('SELECT * FROM agent WHERE id = ?', [userId]);
+            delete user[0].password
+            return user[0]
+        }
+        return false
     } finally {
         connection.release();
     }

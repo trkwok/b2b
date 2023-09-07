@@ -43,7 +43,13 @@ const changeAgentStatus = async (req, res, next) => {
 
     if (userExists) {
         // Update the user's status and approved_by fields
-        const updateResult = await approveUser(userId, req.user.id, req.body.status);
+        const connection = await pool.getConnection();
+        const [user] = await connection.query('SELECT * FROM agent WHERE id = ?', [userId]);
+        if(req.body.status === user[0].status) {
+            return  next(new ErrorResponse( `User status already in ${user[0].status}`, httpStatus.BAD_REQUEST))
+        }
+
+        const updateResult = await approveUser(next,userId, req.user.id, req.body.status);
 
         if (updateResult) {
             return updateResult
@@ -70,15 +76,19 @@ async function checkUserExists(status,userId) {
 }
 
 // Function to approve a user and set the approved_by field
-async function approveUser(userId, approvedById, status) {
+async function approveUser(next,userId, approvedById, status) {
     const connection = await pool.getConnection();
     try {
+
+
         const updateQuery = 'UPDATE Agent SET status = ?, approved_by = ? WHERE id = ?';
         const [updateResult] = await connection.query(updateQuery, [status, approvedById, userId]);
        // console.log(updateResult)
         if(updateResult.affectedRows > 0) {
             const [user] = await connection.query('SELECT * FROM agent WHERE id = ?', [userId]);
             delete user[0].password
+            console.log(status, user[0].status)
+            if(status === user[0].status)
             return user[0]
         }
         return false

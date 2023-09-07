@@ -5,8 +5,13 @@ import {
     isRequestValidated,
     updateAgentRequest,
     validateSigninRequest,
-    validateCmsItem, validateFormData, validateResetPasswordData, validateChangePasswordData, validateStaffCreation
-} from "../../utils/validator";
+    validateCmsItem,
+    validateFormData,
+    validateResetPasswordData,
+    validateChangePasswordData,
+    validateStaffCreation,
+    validateRequestBody
+} from '../../utils/validator';
 import {upload} from "../../utils/fileUploader";
 import {imageHandler, MultipleImageHandler, removeCertificatesImages, removeStoreImage}
     from "../../helpers/imageHandler";
@@ -35,7 +40,7 @@ router.route('/agent_cms').post(validateCmsItem, isRequestValidated,
 
 router.route('/agent_certificates')
     .post(upload.array('images', 4),MultipleImageHandler,
-        removeCertificatesImages, agentController.updateCertificates)
+        removeCertificatesImages,validateRequestBody,isRequestValidated, agentController.updateCertificates)
 
 
 router.route('/agent_forgot_password')

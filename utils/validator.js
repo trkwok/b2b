@@ -152,6 +152,33 @@ exports.staffUpdateValidators = [
     body('role').isIn(['admin', 'reservation_officer', 'manager', 'operation_executive', 'staff']).withMessage('Invalid role'),
 ];
 
+// Define the allowed types
+const allowedTypes = ['national_identification', 'trade_licence', 'atab_certification', 'toab_certification'];
+// Custom validation function
+const validateTypesArray = (value) => {
+    if (!Array.isArray(value)) {
+        console.log(value);
+        throw new Error('Types must be an array');
+    }
+
+    // Check if all elements in the array are allowed types
+    const invalidTypes = value.filter((type) => !allowedTypes.includes(type));
+    if (invalidTypes.length > 0) {
+        throw new Error(`Invalid types: ${invalidTypes.join(', ')}`);
+    }
+
+    return true;
+};
+
+// Validation middleware
+exports.validateRequestBody = [
+    body('types')
+        .notEmpty()
+        .withMessage(`files names can't be empty`)
+        .custom(validateTypesArray)
+        .withMessage('Invalid types array'),
+];
+
 
 exports.isRequestValidated = async (req, res, next) => {
    // console.log(req.body)

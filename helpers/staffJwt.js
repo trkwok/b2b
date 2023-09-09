@@ -27,20 +27,23 @@ async  function isRevoked(req, payload)  {
         //  console.log(token + 'kkk');
         // console.log('here');
         let user = JWT.verify(token, env.JWT_SECRET);
-        // console.log(user);
-        user = await getUserById(user.agentId);
+      //   console.log(user);
+        user = await getUserById(user.id);
+        req.is_staff = true;
         req.user = user[0];
+        console.log(req.user)
         //req.user = user;
-        console.log(req.user);
+        //console.log(req.user);
         //  console.log(payload.payload.agentId)
         //  req.userId = payload.payload.agentId
 
         // Perform checks here based on user.role
         // If the user is not authorized, return done(null, true);
         // If the user is authorized, return done(null, false);
-        return !(req.user);
+        return !( user[0]);
         // done(null, false); // Example: For now, always consider the user authorized.
     } catch (error) {
+       // console.log(error)
         throw new ErrorResponse(error, 400);
     }
 }

@@ -1,9 +1,8 @@
 import express from 'express';
-import depositRouter from '../deposit'
+import depositRouter from '../deposite/deposit'
 
 import staffJwt from "../../helpers/staffJwt";
 import staffRouter from './staff'
-
 const router = express.Router();
 
 

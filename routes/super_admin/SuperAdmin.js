@@ -1,14 +1,7 @@
 import express from 'express';
 //import {agentController} from "../controller/agentController";
 import {
-    validateSignupRequest,
     isRequestValidated,
-    updateAgentRequest,
-    validateSigninRequest,
-    validateCmsItem,
-    validateFormData,
-    validateResetPasswordData,
-    validateChangePasswordData,
     validateAdmin,
     agentStatusUpdate
 } from '../../utils/validator';
@@ -17,6 +10,8 @@ import {imageHandler} from "../../helpers/imageHandler";
 import {adminController} from '../../admin/controller/adminController';
 import {staffController} from '../../agent/controller/staffController';
 import {agentController} from '../../agent/controller/agentController';
+import {depositController} from '../../agent/controller/depositController';
+import {updateStatusValidationRules }from '../../utils/depositeValidator';
 
 const router = express.Router();
 
@@ -27,10 +22,15 @@ router.route('/create_admin')
 
 /*router.route('/login')
     .post(validateSigninRequest, isRequestValidated, adminController.loginAdmin)*/
-
+router.route('/admin_get_all_staff').get(staffController.getStaff)
 router.route('/get_all_agent').get(agentController.getAgent)
 router.route('/change_agent_status/:id')
     .post(agentStatusUpdate,isRequestValidated,adminController.changeAgentStatus)
+
+router.route('/get_all_deposit').get(depositController.getAllDepositRequestsController)
+
+router.route('/change_deposit_status/:id')
+    .put(updateStatusValidationRules,isRequestValidated,depositController.changeStatusDeposit)
 
 /*router.route('/update_agent')
     .put(upload.single('image'),

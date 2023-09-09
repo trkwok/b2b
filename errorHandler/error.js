@@ -3,7 +3,7 @@ import httpStatus from "http-status";
 
 const errorHandler = (err, req, res, next) =>{
 
-   //console.log(err);
+  // console.log(err);
  //  console.log(req.files)
     //console.log('here')
     let error = {...err}

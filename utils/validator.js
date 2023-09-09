@@ -1,5 +1,6 @@
 import { body, validationResult } from 'express-validator'
 import ErrorResponse from "../errorHandler/errorResponse";
+import {deleteFile} from '../helpers/folderhandle';
 
 exports.validateSignupRequest = [
     body('first_name')
@@ -186,7 +187,13 @@ exports.isRequestValidated = async (req, res, next) => {
     console.log(errors)
 
     if (errors.array().length > 0) {
-        next(new ErrorResponse(errors.array()[0].msg, 401))
+        req.image &&  deleteFile(req.image)
+        if (req.images)
+        for (const imagePath of req.images) {
+            deleteFile(imagePath);
+        }
+       // console.log(`${errors.array()[0].path} is ${errors.array()[0].msg}`)
+        next(new ErrorResponse(` ${errors.array()[0].msg}`, 401))
     }
     next();
 }

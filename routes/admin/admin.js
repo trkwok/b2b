@@ -21,6 +21,6 @@ router.route('/admin_get_all_staff').get(staffController.getStaff)
 router.route('/admin_get_all_agent').get(agentController.getAgent)
 router.route('/get_all_deposit').get(depositController.getAllDepositRequestsController)
 router.route('/change_deposit_status/:id')
-    .put(upload.single('admin_attachment'),updateStatusValidationRules,isRequestValidated,
+    .put(upload.single('/admin_attachment'),updateStatusValidationRules,isRequestValidated,
         imageHandler,depositController.changeStatusDeposit)
 export default router;

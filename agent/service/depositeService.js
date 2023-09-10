@@ -1,7 +1,5 @@
 import pool from '../../database/db';
 import {deleteFile} from '../../helpers/folderhandle';
-//import {deleteFile} from '../../helpers/folderhandle';
-import os from 'os';
 import ErrorResponse from '../../errorHandler/errorResponse';
 import httpStatus from 'http-status';
 
@@ -131,7 +129,8 @@ const changeStatusDeposit = async (req, res, next) => {
 
 
         // Update the status in the database
-        const updateQuery = 'UPDATE deposit_request SET status = ?, remarks = ?, change_status_by= ? admin_attachment= ? WHERE id = ?';
+        const updateQuery = `UPDATE deposit_request SET status = ?, remarks = ?, 
+                     change_status_by = ?, admin_attachment = ? WHERE id = ?`;
         const [result] = await pool.execute(updateQuery, [status, remarks, change_status_by, req.url, id]);
 
 
@@ -142,7 +141,7 @@ const changeStatusDeposit = async (req, res, next) => {
         }
 
         // Return a success response
-        console.log(result)
+      //  console.log(result)
         return result
     } catch (error) {
         deleteFile(req.image)
